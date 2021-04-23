@@ -2,7 +2,7 @@
 //  extended_vector.h
 //  bankers
 //
-//  Created by William McCarthy on 0711//20.
+//  
 //
 
 #ifndef __EXT_VECTOR_H__
