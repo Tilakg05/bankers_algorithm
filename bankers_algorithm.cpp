@@ -1,7 +1,7 @@
 ////===========================================================
 //// bankers_algorithm.cpp
+//// Tilak ghorashainee
 ////===========================================================
-//
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -9,78 +9,13 @@
 
 #include "ext_vector.h"
 #include "bank.h"
+
 #include "customer.h"
 #include "utils.h"
 
 //
 pthread_mutex_t mutex_;  // prevents intermingled printing by threads (customers)
-//
-//
-void run_customer_bank_tests() {
-  ext_vector<int> alloc = { 3, 1, 5 };
-  
-  ext_vector<int> max  = { 5, 2, 6 };
-  ext_vector<int> need = max - alloc;
-  ext_vector<int> avail = alloc + need + ext_vector<int>({ 3, 3, 3 });
 
-  std::cout << "alloc: " << alloc << "\n";
-  std::cout << "  max: " << max  << "\n";
-  std::cout << " need: " << need << "\n";
-
-  Customer c0(0, alloc, max);
-  Customer c1(1, max,   max);
-  ext_vector<int> maxe = alloc + avail;
-  Customer c2(2, alloc, maxe);
-  Bank* pBank = new Bank(avail);
-
-  std::cout << "\nCustomer: " << c0;
-  std::cout << "needs met? " << Utils::yes_or_no(c0.needs_met()) << "\n\n";
-
-  std::cout << "\nBank: " << *pBank << "\n";
-  pBank->add_customer(&c0);
-  pBank->add_customer(&c1);
-  pBank->add_customer(&c2);
-  std::cout << "\nBank: " << *pBank << "\n";
-
-
-  ext_vector<int> req = c0.create_req();
-  std::cout << "random request: " << req << "\n";
-  std::cout << "Is this req available? " << Utils::yes_or_no(pBank->is_avail(req)) << "\n";
-  std::cout << "     Is this req safe? " << Utils::yes_or_no(pBank->is_safe(0, req)) << "\n";
-
-  std::cout << "Withdrawing request from bank...\n";
-  pBank->withdraw_resources(req);
-  std::cout << "\nBank: " << *pBank << "\n";
-  std::cout << "Depositing request to bank...\n";
-  pBank->deposit_resources(req);
-  std::cout << "\nBank: " << *pBank << "\n";
-  ext_vector<int> toomuch = { 100, 100, 100 };
-  pBank->withdraw_resources(toomuch);
-  std::cout << "\nBank: " << *pBank << "\n";
-
-  c0.alloc_req(req);
-  std::cout << "Customer: " << c0;
-
-  c0.dealloc_req(req);
-  std::cout << "Customer: " << c0;
-
-  req = need;
-  c0.alloc_req(need);
-  std::cout << "Customer: " << c0;
-
-  std::cout << "\nCustomer: " << c0;
-  std::cout << "needs met? " << Utils::yes_or_no(c0.needs_met()) << "\n\n";
-  c0.release_all_resources();
-  std::cout << "Customer: " << c0 << "\n";
-
-  std::cout << "\nBank: " << *pBank << "\n";
-
-  c1.release_all_resources();
-  std::cout << "\nBank: " << *pBank << "\n";
-
-  delete pBank;
-}
-//
 //
 void* runner(void* param) {           // thread runner
   Customer* c = (Customer*)param;
@@ -112,11 +47,9 @@ void* runner(void* param) {           // thread runner
   }
   pthread_mutex_lock(&mutex_);
   std::cout << ">>>>>>>>>>>>>>> Customer thread p#" << c->get_id() << " shutting down... <<<<<<<<<<<<<<<<<\n\n";
- 
   pthread_mutex_unlock(&mutex_);
-  
-     b->show();
-  
+
+  b->show();
   pthread_exit(0);
 }
 
